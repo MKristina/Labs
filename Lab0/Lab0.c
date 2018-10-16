@@ -100,7 +100,7 @@ bool check(char *number, int b1, int b2, int length) {
 
 	return true;
 }
-int main(int argc, char **argv[])
+int main(int argc, char *argv[])
 {
 	int b1, b2;
 	int length = 0, decPart = 0;
