@@ -26,7 +26,7 @@ void quck_sort(int *sequence, int first, int last){
 }
 
 
-int main(void)
+int main()
 {
 	int *sequence;
 	int N, first, last;
