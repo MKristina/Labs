@@ -30,7 +30,7 @@ void heapSort(int sequence[], int Num){
 }
 int main(){
 	int *sequence;
-	int N, number;
+	int N;
 	scanf("%d", &N);
 	sequence = (int*)malloc(N * sizeof(int));
 	for (int i = 0; i < N; i++)
