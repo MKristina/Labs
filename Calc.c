@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 
 struct list {
 	int data;
@@ -150,6 +149,7 @@ char *Conversation(char *InputStr){
 			j++;
 		}
 	}
+	free(S);
 	return strdup(&StrOut[0]);
 }
 
@@ -185,7 +185,7 @@ void Count(char *Str){
 				case '/':if (a != 0) result = (b / a);
 						 else divZero = -1;
 					 break;
-				default: return 0;
+				default:  break;
 				}
 			Push(result, S);
 			}
@@ -193,6 +193,7 @@ void Count(char *Str){
 	}
 	if (divZero == -1) printf("division by zero");
 	else printf("%d\n", Pop(S));
+	free(S);
 }
 int main() {
 	char InputStr[1501] = "";
@@ -201,6 +202,5 @@ int main() {
 		printf("syntax error");
 	else
 	 Count(InputStr);
-	//_getch();
 	return 0;
 }
