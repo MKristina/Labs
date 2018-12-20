@@ -150,7 +150,7 @@ char *Conversation(char *InputStr){
 		}
 	}
 	free(S);
-	return strdup(&StrOut[0]);
+	return &StrOut[0];
 }
 
 void Count(char *Str){
