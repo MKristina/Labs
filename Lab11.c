@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Максимальное количество вершин
+// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅy
 #define MAX_VERTICES 5000  
 
-// Ребра графа
+// Р РµР±СЂР° РіСЂР°С„Р°
 typedef struct edge {
 	int start;
 	int finish;
@@ -44,23 +44,23 @@ void swap(int * a, int * b){
 	*b ^= *a;
 	*a ^= *b;
 }
-// сравнение двух ребер
+// СЃСЂР°РІРЅРµРЅРёРµ РґРІСѓС… СЂРµР±РµСЂ
 int edgeCmp(const void *a, const void *b)
 {
 	return ((*(Edge*)a).weight - (*(Edge*)b).weight);
 }
-//добавление вершины в дерево, состоящее только из этой вершины
+//РґРѕР±Р°РІР»РµРЅРёРµ РІРµСЂС€РёРЅС‹ РІ РґРµСЂРµРІРѕ, СЃРѕСЃС‚РѕСЏС‰РµРµ С‚РѕР»СЊРєРѕ РёР· СЌС‚РѕР№ РІРµСЂС€РёРЅС‹
 void creationTree(int vertice, int* parent, int* rank) {
 	parent[vertice] = vertice;
 	rank[vertice] = 0;
 }
-//определяется, в каком дереве находится данная вершина
+//РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ, РІ РєР°РєРѕРј РґРµСЂРµРІРµ РЅР°С…РѕРґРёС‚СЃСЏ РґР°РЅРЅР°СЏ РІРµСЂС€РёРЅР°
 int findTree(int vertice, int* parent) {
 	if (vertice == parent[vertice])
 		return vertice;
 	return parent[vertice] = findTree(parent[vertice], parent);
 }
-//объединение двух деревьев
+//РѕР±СЉРµРґРёРЅРµРЅРёРµ РґРІСѓС… РґРµСЂРµРІСЊРµРІ
 void unionTree(int a, int b, int* parent, int* rank) {
 	a = findTree(a, parent);
 	b = findTree(b, parent);
@@ -83,12 +83,10 @@ int main(){
 
 	if (fscanf(in, "%d", &numOfVertices) == EOF) {
 		printf("bad number of lines");
-		_getch();
 		exit(0);
 	}
 	if (fscanf(in, "%d", &numOfEdges) == EOF) {
 		printf("bad number of lines");
-		_getch();
 		exit(0);
 	}
 	
@@ -100,14 +98,14 @@ int main(){
 
 	int visitedVertices = 1;
 
-	// Сортировка ребер в порядке возрастания весов
+	// РЎРѕСЂС‚РёСЂРѕРІРєР° СЂРµР±РµСЂ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂР°СЃС‚Р°РЅРёСЏ РІРµСЃРѕРІ
 	qsort(edge, numOfEdges, sizeof(Edge), edgeCmp);
 
-	//Размещение каждой вершины в своё дерево
+	//Р Р°Р·РјРµС‰РµРЅРёРµ РєР°Р¶РґРѕР№ РІРµСЂС€РёРЅС‹ РІ СЃРІРѕС‘ РґРµСЂРµРІРѕ
 	for (int i = 0; i < numOfVertices; i++)
 		creationTree(i, parent, rank);
 
-	//Проход по всем ребрам. Определяется, находятся ли начало и конец в разных деревьях
+	//РџСЂРѕС…РѕРґ РїРѕ РІСЃРµРј СЂРµР±СЂР°Рј. РћРїСЂРµРґРµР»СЏРµС‚СЃСЏ, РЅР°С…РѕРґСЏС‚СЃСЏ Р»Рё РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РІ СЂР°Р·РЅС‹С… РґРµСЂРµРІСЊСЏС…
 	for (int i = 0; i < numOfEdges; i++) {
 		Edge currentEdge = edge[i];
 		if (findTree(currentEdge.start, parent) != findTree(currentEdge.finish, parent)) {
@@ -116,7 +114,7 @@ int main(){
 			visitedVertices++;
 		}
 	}
-	// если в остове графа не все вершины, то у него нет ни одного каркаса 
+	// РµСЃР»Рё РІ РѕСЃС‚РѕРІРµ РіСЂР°С„Р° РЅРµ РІСЃРµ РІРµСЂС€РёРЅС‹, С‚Рѕ Сѓ РЅРµРіРѕ РЅРµС‚ РЅРё РѕРґРЅРѕРіРѕ РєР°СЂРєР°СЃР° 
 	if (visitedVertices != numOfVertices) {
 		rewind(out);
 		fprintf(out, "no spanning tree\n");
