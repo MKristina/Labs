@@ -95,16 +95,12 @@ int main(){
 	int *rank = (int*)malloc(sizeof(int)*numOfVertices);
 
 	checkAndRead(in, numOfVertices, numOfEdges, edge);
-
 	int visitedVertices = 1;
-
 	// Сортировка ребер в порядке возрастания весов
 	qsort(edge, numOfEdges, sizeof(Edge), edgeCmp);
-
 	//Размещение каждой вершины в своё дерево
 	for (int i = 0; i < numOfVertices; i++)
 		creationTree(i, parent, rank);
-
 	//Проход по всем ребрам. Определяется, находятся ли начало и конец в разных деревьях
 	for (int i = 0; i < numOfEdges; i++) {
 		Edge currentEdge = edge[i];
