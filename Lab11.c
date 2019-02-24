@@ -1,19 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅy
+// Максимальное количество вершин
 #define MAX_VERTICES 5000  
 
-// Р РµР±СЂР° РіСЂР°С„Р°
+// Ребра графа
 typedef struct edge {
 	int start;
 	int finish;
 	int weight;      
 } Edge;
 
+void swap(int* a, int* b){
+	int temp;
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+//поиск в глубину для проверки графа на связность
+void dfs(Edge *edge, int*visited, int vertex, int numOfEdges, int numOfVertices){
+	visited[vertex] = 1;
+	for (int i = 0; i < numOfEdges; i++){
+		for (int j = 0; j < numOfVertices; j++){
+			if ((edge[i].start == vertex) && (edge[i].finish == j) && (!visited[j]))
+				dfs(edge, visited, j, numOfEdges, numOfVertices);
+			if ((edge[i].finish == vertex ) && (edge[i].start == j) && (!visited[j]))
+				dfs(edge, visited, j, numOfEdges, numOfVertices);
+		}
+
+	}
+}
 void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
+
 	if (numOfVertices < 0 || numOfVertices > MAX_VERTICES) {
 		printf("bad number of vertices");
+		exit(0);
+	}
+	if (numOfVertices == 0){
+		printf("no spanning tree\n");
 		exit(0);
 	}
 	if (numOfEdges < 0 || numOfEdges >(numOfVertices*(numOfVertices - 1) / 2)) {
@@ -22,8 +46,11 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 	}
 	for (int i = 0; i < numOfEdges; i++) {
 		if (fscanf(in, "%d %d %d", &edge[i].start, &edge[i].finish, &edge[i].weight) != EOF) {
+			if (edge[i].start > edge[i].finish)
+				swap(&edge[i].start, &edge[i].finish);
 			edge[i].start = edge[i].start - 1;
 			edge[i].finish = edge[i].finish - 1;
+	//		printf("%d %d\n", edge[i].start, edge[i].finish);
 		}
 		else {
 			printf("bad number of lines");
@@ -38,36 +65,26 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 			exit(0);
 		}
 	}
+	
 }
-void swap(int* a, int* b){
-	int temp;
-	temp = *a;
-	*a = *b;
-	*b = temp;
-}
-<<<<<<< HEAD
 
 // сравнение двух ребер
 int edgeCmp(const void* a, const void* b)
-=======
-// СЃСЂР°РІРЅРµРЅРёРµ РґРІСѓС… СЂРµР±РµСЂ
-int edgeCmp(const void *a, const void *b)
->>>>>>> 631ddf1ace48e6917b65847e3fd5e2420dd95aae
 {
 	return ((*(Edge*)a).weight - (*(Edge*)b).weight);
 }
-//РґРѕР±Р°РІР»РµРЅРёРµ РІРµСЂС€РёРЅС‹ РІ РґРµСЂРµРІРѕ, СЃРѕСЃС‚РѕСЏС‰РµРµ С‚РѕР»СЊРєРѕ РёР· СЌС‚РѕР№ РІРµСЂС€РёРЅС‹
+//добавление вершины в дерево, состоящее только из этой вершины
 void creationTree(int vertice, int* parent, int* rank) {
 	parent[vertice] = vertice;
 	rank[vertice] = 0;
 }
-//РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ, РІ РєР°РєРѕРј РґРµСЂРµРІРµ РЅР°С…РѕРґРёС‚СЃСЏ РґР°РЅРЅР°СЏ РІРµСЂС€РёРЅР°
+//определяется, в каком дереве находится данная вершина
 int findTree(int vertice, int* parent) {
 	if (vertice == parent[vertice])
 		return vertice;
 	return parent[vertice] = findTree(parent[vertice], parent);
 }
-//РѕР±СЉРµРґРёРЅРµРЅРёРµ РґРІСѓС… РґРµСЂРµРІСЊРµРІ
+//объединение двух деревьев
 void unionTree(int a, int b, int* parent, int* rank) {
 	a = findTree(a, parent);
 	b = findTree(b, parent);
@@ -82,8 +99,7 @@ void unionTree(int a, int b, int* parent, int* rank) {
 
 int main(){
 	FILE* in = fopen("in.txt", "r");
-	FILE* out = fopen("out.txt", "w");
-	if (!in || !out) return EXIT_FAILURE;
+	if (!in) return EXIT_FAILURE;
 
 	int numOfVertices = 0;
 	int numOfEdges = 0;
@@ -98,32 +114,43 @@ int main(){
 	}
 	
 	Edge *edge = (Edge*)malloc(sizeof(Edge)*numOfEdges);
+
 	int *parent = (int*)malloc(sizeof(int)*numOfVertices);
 	int *rank = (int*)malloc(sizeof(int)*numOfVertices);
 
 	checkAndRead(in, numOfVertices, numOfEdges, edge);
-	int visitedVertices = 1;
-	// РЎРѕСЂС‚РёСЂРѕРІРєР° СЂРµР±РµСЂ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂР°СЃС‚Р°РЅРёСЏ РІРµСЃРѕРІ
+
+	int *visited = (int*)malloc(sizeof(int)*numOfVertices);
+	for (int i = 0; i < numOfVertices; i++) visited[i] = 0;
+	if (numOfVertices < 5000){
+		dfs(edge, visited, 0, numOfEdges, numOfVertices);
+		for (int i = 0; i < numOfVertices; i++){
+			if (!visited[i]){
+				printf("no spanning tree\n");
+				exit(0);
+			}
+		}
+	}
+
+	// Сортировка ребер в порядке возрастания весов
 	qsort(edge, numOfEdges, sizeof(Edge), edgeCmp);
-	//Р Р°Р·РјРµС‰РµРЅРёРµ РєР°Р¶РґРѕР№ РІРµСЂС€РёРЅС‹ РІ СЃРІРѕС‘ РґРµСЂРµРІРѕ
+
+	//Размещение каждой вершины в своё дерево
 	for (int i = 0; i < numOfVertices; i++)
 		creationTree(i, parent, rank);
-	//РџСЂРѕС…РѕРґ РїРѕ РІСЃРµРј СЂРµР±СЂР°Рј. РћРїСЂРµРґРµР»СЏРµС‚СЃСЏ, РЅР°С…РѕРґСЏС‚СЃСЏ Р»Рё РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РІ СЂР°Р·РЅС‹С… РґРµСЂРµРІСЊСЏС…
+	
+	//Проход по всем ребрам. Определяется, находятся ли начало и конец в разных деревьях
 	for (int i = 0; i < numOfEdges; i++) {
 		Edge currentEdge = edge[i];
 		if (findTree(currentEdge.start, parent) != findTree(currentEdge.finish, parent)) {
 			printf("%d %d\n", currentEdge.start+1, currentEdge.finish+1);
 			unionTree(currentEdge.start, currentEdge.finish, parent, rank);	
-			visitedVertices++;
 		}
 	}
-	// РµСЃР»Рё РІ РѕСЃС‚РѕРІРµ РіСЂР°С„Р° РЅРµ РІСЃРµ РІРµСЂС€РёРЅС‹, С‚Рѕ Сѓ РЅРµРіРѕ РЅРµС‚ РЅРё РѕРґРЅРѕРіРѕ РєР°СЂРєР°СЃР° 
-	if (visitedVertices != numOfVertices) {
-		rewind(out);
-		fprintf(out, "no spanning tree\n");
-	}
+
 	free(edge);
 	free(parent);
 	free(rank);
+	fclose(in);
 	return 0;
 }
