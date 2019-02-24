@@ -50,7 +50,6 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 				swap(&edge[i].start, &edge[i].finish);
 			edge[i].start = edge[i].start - 1;
 			edge[i].finish = edge[i].finish - 1;
-	//		printf("%d %d\n", edge[i].start, edge[i].finish);
 		}
 		else {
 			printf("bad number of lines");
@@ -151,6 +150,7 @@ int main(){
 	free(edge);
 	free(parent);
 	free(rank);
+	free(visited);
 	fclose(in);
 	return 0;
 }
