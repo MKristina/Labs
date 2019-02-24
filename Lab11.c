@@ -39,13 +39,15 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 		}
 	}
 }
-void swap(int * a, int * b){
-	*a ^= *b;
-	*b ^= *a;
-	*a ^= *b;
+void swap(int* a, int* b){
+	int temp;
+	temp = *a;
+	*a = *b;
+	*b = temp;
 }
+
 // сравнение двух ребер
-int edgeCmp(const void *a, const void *b)
+int edgeCmp(const void* a, const void* b)
 {
 	return ((*(Edge*)a).weight - (*(Edge*)b).weight);
 }
