@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <limits.h>
+#include <inttypes.h>
 // Максимальное количество вершин
 #define MAX_VERTICES 5000  
 
@@ -44,8 +45,9 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 		printf("bad number of edges");
 		exit(0);
 	}
+	long long c = 0;
 	for (int i = 0; i < numOfEdges; i++) {
-		if (fscanf(in, "%d %d %d", &edge[i].start, &edge[i].finish, &edge[i].weight) != EOF) {
+		if (fscanf(in, "%d %d %ld", &edge[i].start, &edge[i].finish, &c) != EOF) {
 			if (edge[i].start > edge[i].finish)
 				swap(&edge[i].start, &edge[i].finish);
 			edge[i].start = edge[i].start - 1;
@@ -55,16 +57,16 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 			printf("bad number of lines");
 			exit(0);
 		}
+		if (c < 0 || c > INT_MAX) {
+				printf("bad length");
+				exit(0);
+			}
+		edge[i].weight = c;
 		if (edge[i].start < 0 || edge[i].start > numOfVertices-1 || edge[i].finish < 0 || edge[i].finish > numOfVertices-1) {
 			printf("bad vertex");
 			exit(0);
 		}
-		if (edge[i].weight < 0 || edge[i].weight > INT_MAX) {
-			printf("bad length");
-			exit(0);
-		}
 	}
-	
 }
 
 // сравнение двух ребер
@@ -142,7 +144,7 @@ int main(){
 	for (int i = 0; i < numOfEdges; i++) {
 		Edge currentEdge = edge[i];
 		if (findTree(currentEdge.start, parent) != findTree(currentEdge.finish, parent)) {
-			printf("%d %d\n", currentEdge.start+1, currentEdge.finish+1);
+			printf("%" PRId32 " %" PRId32 "\n", currentEdge.start+1, currentEdge.finish+1);
 			unionTree(currentEdge.start, currentEdge.finish, parent, rank);	
 		}
 	}
