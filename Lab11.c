@@ -47,7 +47,9 @@ void checkAndRead(FILE *in, int numOfVertices, int numOfEdges, Edge *edge) {
 	}
 	long long c = 0;
 	for (int i = 0; i < numOfEdges; i++) {
-		if (fscanf(in, "%d %d %ld", &edge[i].start, &edge[i].finish, &c) != EOF) {
+		int cnt = fscanf(in, "%d %d %ld", &edge[i].start, &edge[i].finish, &c);
+		//проверка, сколько удачно считано scanf и не конец файла
+		if (cnt != EOF && cnt == 3){
 			if (edge[i].start > edge[i].finish)
 				swap(&edge[i].start, &edge[i].finish);
 			edge[i].start = edge[i].start - 1;
